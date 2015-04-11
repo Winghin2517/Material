@@ -1,4 +1,4 @@
-package com.example.simon.material;
+package com.example.simon.material.WelcomeTabs;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.simon.material.home.ThreadPop;
+import com.example.simon.material.R;
+import com.example.simon.material.ThreadPop.ThreadPop;
 
 import java.util.ArrayList;
 

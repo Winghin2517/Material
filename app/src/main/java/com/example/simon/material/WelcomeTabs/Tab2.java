@@ -1,4 +1,4 @@
-package com.example.simon.material;
+package com.example.simon.material.WelcomeTabs;
 
         import android.os.Bundle;
         import android.support.annotation.Nullable;
@@ -6,6 +6,8 @@ package com.example.simon.material;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
+
+        import com.example.simon.material.R;
 
 /**
  * Created by hp1 on 21-01-2015.

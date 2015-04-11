@@ -1,4 +1,4 @@
-package com.example.simon.material.home;
+package com.example.simon.material.ThreadPop;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,9 +8,9 @@ import android.widget.TextView;
 import com.example.simon.material.R;
 
 /**
- * Created by Simon on 2015/04/04.
+ * Created by Simon on 2015/04/10.
  */
-public class ThreadPop extends ActionBarActivity {
+public class Temp extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,4 +27,5 @@ public class ThreadPop extends ActionBarActivity {
         int num = intent.getIntExtra("ListNo", 0);
         textView.setText("Card " + num + " was selected");
     }
+
 }

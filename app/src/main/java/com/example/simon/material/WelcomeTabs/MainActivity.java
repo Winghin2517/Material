@@ -1,4 +1,4 @@
-package com.example.simon.material;
+package com.example.simon.material.WelcomeTabs;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.simon.material.R;
+import com.example.simon.material.GoogleIO.SlidingTabLayout;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends ActionBarActivity {
@@ -32,7 +34,7 @@ public class MainActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
 
         setUpViewPagerAdapter();
-        setUpFAB();
+        //setUpFAB(); //disabled FAB
 
     }
 

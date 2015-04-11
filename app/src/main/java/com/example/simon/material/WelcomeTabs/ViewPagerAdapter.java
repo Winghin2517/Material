@@ -1,4 +1,4 @@
-package com.example.simon.material;
+package com.example.simon.material.WelcomeTabs;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;

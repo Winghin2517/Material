@@ -1,4 +1,4 @@
-package com.example.simon.material;
+package com.example.simon.material.GoogleIO;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.simon.material.R;
 
 /**
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as to

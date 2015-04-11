@@ -1,4 +1,4 @@
-package com.example.simon.material;
+package com.example.simon.material.WelcomeTabs;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.simon.material.R;
+import com.example.simon.material.WelcomeTabs.MainActivity;
+import com.example.simon.material.WelcomeTabs.MyAdapter;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -57,12 +60,12 @@ public class Tab1 extends Fragment implements ObservableScrollViewCallbacks {
         // specify an adapter (see also next example)
         mAdapter = new MyAdapter(myDataset, mContext, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setScrollViewCallbacks(this);
+        //mRecyclerView.setScrollViewCallbacks(this); don't want the tab bar to be hidden anymore.
         setUpSwipeRefreshView(v);
         return v;
 
     }
-
+    //This is the latest way to refresh your views from Google
     private void setUpSwipeRefreshView(View v) {
         final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.activity_main_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.accent);
@@ -91,7 +94,7 @@ public class Tab1 extends Fragment implements ObservableScrollViewCallbacks {
 
     }
 
-    @Override
+    @Override //To hid the tab bar
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
         ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
         if (scrollState == ScrollState.UP) {
