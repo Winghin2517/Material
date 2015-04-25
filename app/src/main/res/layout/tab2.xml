@@ -13,4 +13,44 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter in your name"
+        android:id="@+id/name"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:hint="Enter in your description"
+
+        android:id="@+id/description" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/description"
+        android:id="@+id/picurl"
+        android:hint="Enter in your picurl"/>
+
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Display Saved"
+        android:id="@+id/display_saved"
+        android:layout_below="@+id/picurl"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save in DB"
+        android:id="@+id/save_in_db"
+        android:layout_below="@+id/picurl"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

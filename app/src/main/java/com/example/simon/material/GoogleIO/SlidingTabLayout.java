@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -62,6 +63,15 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
     private final SlidingTabStrip mTabStrip;
+
+    private Integer[] mIconResourceArray;
+
+    public Integer[] getIconResourceArray() {
+        return mIconResourceArray;
+    }
+    public void setIconResourceArray(Integer[] mIconResourceArray) {
+        this.mIconResourceArray = mIconResourceArray;
+    }
 
     public SlidingTabLayout(Context context) {
         this(context, null);
@@ -174,22 +184,25 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
         for (int i = 0; i < adapter.getCount(); i++) {
             View tabView = null;
-            TextView tabTitleView = null;
+            //TextView tabTitleView = null;
 
-            if (mTabViewLayoutId != 0) {
+            //if (mTabViewLayoutId != 0) {
                 // If there is a custom tab view layout id set, try and inflate it
-                tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
+                tabView = LayoutInflater.from(getContext()).inflate(R.layout.tab_layout, mTabStrip,
                         false);
-                tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
-            }
+                //tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
+            //}
 
             if (tabView == null) {
                 tabView = createDefaultTabView(getContext());
             }
 
-            if (tabTitleView == null && TextView.class.isInstance(tabView)) {
-                tabTitleView = (TextView) tabView;
-            }
+            ImageView iconImageView = (ImageView) tabView.findViewById(R.id.tab_layout_icon);
+            iconImageView.setImageDrawable(getContext().getResources().getDrawable(getIconResourceArray()[i]));
+
+            //if (tabTitleView == null && TextView.class.isInstance(tabView)) {
+            //    tabTitleView = (TextView) tabView;
+            //}
 
             if (mDistributeEvenly) {
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
@@ -197,7 +210,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 lp.weight = 1;
             }
 
-            tabTitleView.setText(adapter.getPageTitle(i));
+           // tabTitleView.setText(adapter.getPageTitle(i));
             tabView.setOnClickListener(tabClickListener);
             String desc = mContentDescriptions.get(i, null);
             if (desc != null) {
@@ -208,8 +221,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
             if (i == mViewPager.getCurrentItem()) {
                 tabView.setSelected(true);
             }
-            tabTitleView.setTextColor(getResources().getColorStateList(R.color.selector));
-            tabTitleView.setTextSize(14);
+            //tabTitleView.setTextColor(getResources().getColorStateList(R.color.selector));
+            //tabTitleView.setTextSize(14);
         }
     }
 

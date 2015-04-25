@@ -8,8 +8,18 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.simon.material.R;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
@@ -25,7 +35,6 @@ public class ThreadPop extends BaseActivity implements ObservableScrollViewCallb
 
     private static final float MAX_TEXT_SCALE_DELTA = 0.3f;
     private static final boolean TOOLBAR_IS_STICKY = true;
-
     private View mToolbar;
     private View mImageView;
     private View mOverlayView;
@@ -35,6 +44,7 @@ public class ThreadPop extends BaseActivity implements ObservableScrollViewCallb
     private int mActionBarSize;
     private int mFlexibleSpaceImageHeight;
     private int mToolbarColor;
+    private static ImageView refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +153,7 @@ public class ThreadPop extends BaseActivity implements ObservableScrollViewCallb
             // Change alpha of toolbar background
             if (-scrollY + mFlexibleSpaceImageHeight <= mActionBarSize) { //I think this set the toolbar alpha once off once you have scroll all the way to the top
                 mToolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(1, mToolbarColor));
+
             } else {
                 mToolbar.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, mToolbarColor));
             }
@@ -176,6 +187,55 @@ public class ThreadPop extends BaseActivity implements ObservableScrollViewCallb
         } else {
             ViewHelper.setPivotX(mTitleView, 0);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        final MenuItem item = menu.findItem(R.id.action_refresh);
+
+        item.setActionView(R.layout.menu_actionview_refresh);
+        refresh = (ImageView) item.getActionView().findViewById(R.id.refreshButton);
+        ScaleAnimation scale = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f);
+        AlphaAnimation alpha = new AlphaAnimation(0.0f, 1.0f);
+        AnimationSet set = new AnimationSet(true);
+        set.addAnimation(scale);
+        set.addAnimation(alpha);
+        set.setDuration(2000);
+        set.setInterpolator(new OvershootInterpolator());
+        refresh.startAnimation(set);
+
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(item);
+            }
+        });
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_search) {
+            Toast.makeText(this, "Search Pressed", Toast.LENGTH_SHORT).show();
+        }
+        if (id == R.id.action_refresh) {
+            Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+            refresh.startAnimation(rotation);
+        }
+        //noinspection SimplifiableIfStatement
+        // if (id == R.id.action_settings) {
+        //     return true;
+        // }
+
+        return super.onOptionsItemSelected(item);
     }
 }
 

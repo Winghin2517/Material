@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/homescreen"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/welcome_text"
+        android:text="Find a group to follow"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:gravity="center"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_cancel"
+        android:id="@+id/cancel"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/explanation_text" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/welcome_text"
+        android:id="@+id/explanation_text"
+        android:textSize="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="Explore the groups below and join a discussion in your community. You can also find group by nearest to you or search for them."
+        android:gravity="center"
+        />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/explanation_text"
+        >
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/search_box"
+            android:background="@drawable/search_bar_rect"
+            android:paddingLeft="5dp"
+            android:cursorVisible="false"
+           />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="2dp"
+            android:id="@+id/search_button_inside_edittext"
+            android:background="@drawable/selector_search_button_in_edittext"
+            android:clickable="true"
+            android:src="@drawable/ic_action_search_dark"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="2dp"
+            android:id="@+id/cancel_button_inside_edittext"
+            android:background="@drawable/selector_search_button_in_edittext"
+            android:clickable="true"
+            android:src="@drawable/ic_action_cancel"
+            android:layout_gravity="right"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+</RelativeLayout>

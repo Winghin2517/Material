@@ -4,13 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 
-import com.example.simon.material.R;
 import com.example.simon.material.GoogleIO.SlidingTabLayout;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.example.simon.material.R;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -28,10 +24,10 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        //android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         //Toolbar will now take on default Action Bar characteristics
-        toolbar.setTitle("Hello from Toolbar");
-        setSupportActionBar(toolbar);
+        //toolbar.setTitle("Hello from Toolbar");
+        //setSupportActionBar(toolbar);
 
         setUpViewPagerAdapter();
         //setUpFAB(); //disabled FAB
@@ -46,8 +42,11 @@ public class MainActivity extends ActionBarActivity {
 
         // Assiging the Sliding Tab Layout View
         tabs = (SlidingTabLayout) findViewById(R.id.tabs);
-        tabs.setDistributeEvenly(false); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+        tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
+        Integer[] iconResourceArray = { R.drawable.ic_action_search,
+                R.drawable.ic_action_place};
+        tabs.setIconResourceArray(iconResourceArray);
         // Setting Custom Color for the Scroll bar indicator of the Tab View
         tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
@@ -58,25 +57,7 @@ public class MainActivity extends ActionBarActivity {
         // Setting the ViewPager For the SlidingTabsLayout
         tabs.setViewPager(pager);
     }
-
-    private void setUpFAB(){
-
-        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_a);
-        actionA.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionA.setTitle("Action A Clicked!");
-            }
-        });
-        final FloatingActionButton actionB = (FloatingActionButton) findViewById(R.id.action_b);
-        actionB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionB.setTitle("Action B Clicked!");
-            }
-        });
-    }
-
+    /**
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -91,11 +72,15 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_search) {
+            Toast.makeText(this, "Search Pressed", Toast.LENGTH_SHORT).show();
         }
+        //noinspection SimplifiableIfStatement
+       // if (id == R.id.action_settings) {
+       //     return true;
+       // }
 
         return super.onOptionsItemSelected(item);
     }
+    **/
 }

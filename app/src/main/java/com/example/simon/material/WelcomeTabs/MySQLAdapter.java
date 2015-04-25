@@ -1,8 +1,13 @@
 package com.example.simon.material.WelcomeTabs;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,39 +15,40 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.simon.material.Database.DatabaseHelper;
 import com.example.simon.material.Model.Place;
 import com.example.simon.material.R;
 import com.example.simon.material.ThreadPop.ThreadPop;
-import com.squareup.picasso.Picasso;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Simon on 2015/03/31.
  */
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-
+public class MySQLAdapter extends RecyclerView.Adapter<MySQLAdapter.ViewHolder> {
+    private String mDataset[];
+    private Context mContext;
     private RecyclerView mRecyclerView;
     private static CardView cardView;
     private int lastPosition = -1;
     private boolean removed_welcome_screen = false;
-
-    ArrayList<Place> mPlaceList;
-
-    //internet Mongo variables
-    private ArrayList<Place> placeArrayList;
+    private DatabaseHelper db;
+    List<Place> placeList;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(ArrayList<Place> placeArrayList, RecyclerView recyclerView) {
-        mPlaceList = placeArrayList;
+    public MySQLAdapter(ArrayList<String> myDataset, Context context, RecyclerView recyclerView) {
+        mDataset = myDataset.toArray(new String[myDataset.size()]);
+        mContext = context;
         mRecyclerView = recyclerView;
-        //db = new DatabaseHelper(mContext);
-        //placeList = db.getAllPlaces();
-    }
-
-    public void updateList(ArrayList<Place> placeArrayList) {
-        mPlaceList = placeArrayList;
-        notifyDataSetChanged();
+        db = new DatabaseHelper(mContext);
+        placeList = db.getAllPlaces();
     }
 
     // Provide a reference to the views for each data item
@@ -65,7 +71,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         //This constructor would switch what to findViewBy according to the type of viewType
         public ViewHolder(View v, int viewType) {
             super(v);
-
             if (viewType == 0 && !removed_welcome_screen) {
                 mCancel = (ImageView) v.findViewById(R.id.cancel);
                 homescreen = v.findViewById(R.id.homescreen);
@@ -83,7 +88,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ViewHolder onCreateViewHolder(final ViewGroup parent,
+    public ViewHolder onCreateViewHolder(ViewGroup parent,
                                          int viewType)
     {
         View v;
@@ -111,9 +116,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(parent.getContext(), ThreadPop.class);
+                        Intent intent = new Intent(mContext, ThreadPop.class);
                         intent.putExtra("ListNo",mRecyclerView.getChildPosition(v));
-                        parent.getContext().startActivity(intent);
+                        mContext.startActivity(intent);
                     }
                 });
                 return vh;
@@ -152,20 +157,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             });
             //this means it is beyond the headerview now
         } else if (position > 0) {
+            Place place = placeList.get(position-1);
+            holder.name_of_place.setText(place.getName_of_place());
+            holder.description_of_place.setText(place.getDescription_place());
 
-                Place place = mPlaceList.get(position-1);
-                holder.name_of_place.setText(place.getName_of_place());
-                holder.description_of_place.setText(place.getDescription_place());
-                Picasso.with(holder.unipics.getContext()).load(place.getPic_url()).into(holder.unipics);
-                //holder.unipics.setImageBitmap(new LoadPicAsyncTask().execute(place).get());
+            try {
+                holder.unipics.setImageBitmap(new LoadPicAsyncTask().execute(place).get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
 
         }
         }
+
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mPlaceList.size()+1;
+        return db.getRowCount()+1;
 
     }
 
@@ -177,6 +188,51 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         removed_welcome_screen = true;
     }
 
+    //design flaw as i had to block the loading of the pic...I will look at building picasso in.
+    private class LoadPicAsyncTask extends AsyncTask<Place, Void, Bitmap> {
 
+        @Override
+        protected Bitmap doInBackground(Place... params) {
+            Bitmap bm = null;
+            try {
+                URL aURL = new URL(params[0].getPic_url());
+                URLConnection conn = aURL.openConnection();
+                conn.connect();
+                InputStream is = conn.getInputStream();
+                BufferedInputStream bis = new BufferedInputStream(is);
+                bm = BitmapFactory.decodeStream(bis);
+                bis.close();
+                is.close();
+            } catch (IOException e) {
+                Log.e("MyAdapter", "Error getting bitmap", e);
+            }
+            return bm;
+        }
+
+    }
 }
+/**
+if (position % 2 == 0) {
+        holder.unipics.setImageDrawable(mContext.getResources().getDrawable(R.drawable.uni_cpt));
+        }
+        if (position % 2 == 1) {
+        holder.unipics.setImageDrawable(mContext.getResources().getDrawable(R.drawable.uni_wits));
 
+ }
+
+ // Return the size of your dataset (invoked by the layout manager)
+ @Override
+ public int getItemCount() {
+ return mDataset.length;
+ }
+
+ public void removeItem(int position) {
+ mRecyclerView.removeViewAt(position);
+ notifyItemRangeChanged(position, mDataset.length);
+ notifyItemRemoved(position);
+ removed_welcome_screen = true;
+ }
+ }
+
+
+ **/

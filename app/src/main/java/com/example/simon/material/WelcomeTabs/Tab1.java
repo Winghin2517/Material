@@ -1,6 +1,6 @@
 package com.example.simon.material.WelcomeTabs;
 
-import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -8,19 +8,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.simon.material.Database.DatabaseHelper;
+import com.example.simon.material.Model.Place;
 import com.example.simon.material.R;
-import com.example.simon.material.WelcomeTabs.MainActivity;
-import com.example.simon.material.WelcomeTabs.MyAdapter;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by hp1 on 21-01-2015.
@@ -28,24 +33,18 @@ import java.util.ArrayList;
 public class Tab1 extends Fragment implements ObservableScrollViewCallbacks {
 
     private ObservableRecyclerView mRecyclerView;
-    private ObservableRecyclerView.Adapter mAdapter;
+    private MyAdapter mAdapter;
     private ObservableRecyclerView.LayoutManager mLayoutManager;
-    ArrayList<String> myDataset = new ArrayList<String>();
-    static Context mContext;
-
-
+    private DatabaseHelper db;
+    private static boolean dataUpdate;
     public Tab1(){}
-
-    public Tab1(Context context) {
-        mContext = context;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v =inflater.inflate(R.layout.tab1,container,false);
 
         mRecyclerView = (ObservableRecyclerView) v.findViewById(R.id.my_recycler_view);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -54,14 +53,18 @@ public class Tab1 extends Fragment implements ObservableScrollViewCallbacks {
         // use a linear layout manager
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        for (int i = 0 ; i<20; i++){
-            myDataset.add("Number: " + i);
-        }
-        // specify an adapter (see also next example)
-        mAdapter = new MyAdapter(myDataset, mContext, mRecyclerView);
+        //db helper class initialised here
+        db = new DatabaseHelper(getActivity());
+        //testing the loading of the data - load from DB first then if there are differences betweem db and mongolab, then we notifydatasetchanged
+        mAdapter = new MyAdapter(new ArrayList<>(db.getAllPlaces()), mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
+
+        //this asynctask below will set the adapter after the list is downloaded in the fragment - the download will not happen in the adapter
+        new HttpRequestTask().execute();
+
         //mRecyclerView.setScrollViewCallbacks(this); don't want the tab bar to be hidden anymore.
         setUpSwipeRefreshView(v);
+
         return v;
 
     }
@@ -73,7 +76,8 @@ public class Tab1 extends Fragment implements ObservableScrollViewCallbacks {
 
             @Override
             public void onRefresh() {
-                Toast.makeText(mContext, "Refreshing for 3 secs", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Refreshing for 3 secs", Toast.LENGTH_SHORT).show();
+                new HttpRequestTask().execute();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -107,4 +111,50 @@ public class Tab1 extends Fragment implements ObservableScrollViewCallbacks {
             }
         }
     }
+
+
+
+    private class HttpRequestTask extends AsyncTask<Void, Void, ArrayList<Place>> {
+        @Override
+        protected ArrayList<Place> doInBackground(Void... params) {
+            try {
+                final String urlcount = "https://morning-cove-7696.herokuapp.com/getcount";
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                Long count = restTemplate.getForObject(urlcount, Long.class);
+                if (count.intValue() != db.getRowCount()) {
+                    final String url = "https://morning-cove-7696.herokuapp.com/getallplaces";
+                    Place[] mongolabPlacesArray = restTemplate.getForObject(url, Place[].class);
+                    ArrayList<Place> mongolab_places = new ArrayList<>(Arrays.asList(mongolabPlacesArray));
+                    //deleting the old database and replace it with the new
+                    db.deleteAllPlaces();
+                    for (Place place: mongolab_places) {
+                        db.addPlace(place);
+                    }
+                    dataUpdate = true;
+                    return mongolab_places;
+                }
+/*                else {
+                    ArrayList<Place> mongolab_places = new ArrayList<>(db.getAllPlaces());
+                    return mongolab_places;
+                }*/
+            } catch (Exception e) {
+                Log.e("MainActivity", e.getMessage(), e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Place> Places) {
+            // specify an adapter (see also next example) but will be putting this into an asynctask
+            if (dataUpdate) {
+                mAdapter.updateList(Places);
+                mAdapter.notifyDataSetChanged();
+            }
+            dataUpdate = false;
+        }
+
+    }
+
 }
