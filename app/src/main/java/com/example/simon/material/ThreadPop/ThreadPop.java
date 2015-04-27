@@ -2,21 +2,19 @@ package com.example.simon.material.ThreadPop;
 
 import android.annotation.TargetApi;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.view.animation.OvershootInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +25,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.nineoldandroids.view.ViewHelper;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Simon on 2015/04/04.
@@ -36,7 +35,7 @@ public class ThreadPop extends BaseActivity implements ObservableScrollViewCallb
     private static final float MAX_TEXT_SCALE_DELTA = 0.3f;
     private static final boolean TOOLBAR_IS_STICKY = true;
     private View mToolbar;
-    private View mImageView;
+    private ImageView mImageView;
     private View mOverlayView;
     private View mRecyclerViewBackground;
     private ObservableRecyclerView mRecyclerView;
@@ -68,17 +67,20 @@ public class ThreadPop extends BaseActivity implements ObservableScrollViewCallb
                 headerView.getLayoutParams().height = mFlexibleSpaceImageHeight;
             }
         });
-        setDummyDataWithHeader(mRecyclerView, headerView); //This adds the headerView to the recyclerView through the adapter
+        setDummyDataWithHeader(mRecyclerView, headerView); //This adds the headerView to the recyclerView through the adapter - sets the adapter
 
         mToolbar = findViewById(R.id.toolbar);
         if (TOOLBAR_IS_STICKY) { //make it sticky to see what happens...
             mToolbar.setBackgroundColor(Color.TRANSPARENT);
         }
-        mImageView = findViewById(R.id.image);
+        mImageView = (ImageView) findViewById(R.id.image);
+
+        setImageHeaders();
+
         mOverlayView = findViewById(R.id.overlay);
 
         mTitleView = (TextView) findViewById(R.id.title);
-        mTitleView.setText(getTitle());
+        mTitleView.setText(getIntent().getStringExtra("NameOfPlace"));
         setTitle(null);  //so the action bar will not have a title I think
 
         // mRecyclerViewBackground makes RecyclerView's background except header view.
@@ -193,7 +195,7 @@ public class ThreadPop extends BaseActivity implements ObservableScrollViewCallb
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        final MenuItem item = menu.findItem(R.id.action_refresh);
+      /*  final MenuItem item = menu.findItem(R.id.action_refresh);
 
         item.setActionView(R.layout.menu_actionview_refresh);
         refresh = (ImageView) item.getActionView().findViewById(R.id.refreshButton);
@@ -212,7 +214,7 @@ public class ThreadPop extends BaseActivity implements ObservableScrollViewCallb
                 onOptionsItemSelected(item);
             }
         });
-
+*/
         return true;
     }
 
@@ -236,6 +238,30 @@ public class ThreadPop extends BaseActivity implements ObservableScrollViewCallb
         // }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setImageHeaders() {
+        if (getIntent().getStringExtra("NameOfPlace").equals("University of Wits")) {
+            Picasso.with(getApplicationContext()).load(R.drawable.wits).into( mImageView);
+        } else if (getIntent().getStringExtra("NameOfPlace").equals("University of Johannesburg")) {
+            Picasso.with(getApplicationContext()).load(R.drawable.uj).into(mImageView);
+        } else if (getIntent().getStringExtra("NameOfPlace").equals("University of Cape Town")) {
+            Picasso.with(getApplicationContext()).load(R.drawable.uct).into(mImageView);
+        } else if (getIntent().getStringExtra("NameOfPlace").equals("UNISA")) {
+            Picasso.with(getApplicationContext()).load(R.drawable.unisa).into(mImageView);
+        }
+
+    }
+
+    protected int getActionBarSize() {
+        //generic code to obtain system attributes : http://stackoverflow.com/questions/7896615/android-how-to-get-value-of-an-attribute-in-code
+        TypedValue typedValue = new TypedValue();
+        int[] textSizeAttr = new int[]{R.attr.actionBarSize};
+        int indexOfAttrTextSize = 0;
+        TypedArray a = obtainStyledAttributes(typedValue.data, textSizeAttr);
+        int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
+        a.recycle();
+        return actionBarSize;
     }
 }
 

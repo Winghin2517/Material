@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Simon on 2015/04/12.
  */
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class PlaceDatabaseHelper extends SQLiteOpenHelper {
 
     public static final String PLACES_TABLE_NAME = "Places";
     public static final String PLACES_COLUMN_ID = "id";
@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "PlacesDB";
 
     //This constructor will only let me create the places database - it will not let me create other types of DBs.
-    public DatabaseHelper(Context context) {
+    public PlaceDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

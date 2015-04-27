@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/postheader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="What time is tomorrow's accounting lecture?"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black_semi_transparent"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"/>
+
+    <TextView
+        android:id="@+id/postcontent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="5dp"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:text="Has the accounting lecture moved from the morning to the afternoon?" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Like"
+            android:paddingTop="10dp"
+            android:paddingStart="15dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Comment"
+            android:paddingTop="10dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Share"
+            android:paddingTop="10dp"
+            android:paddingEnd="15dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="15dp"
+        android:background="@color/half_black"/>
+</LinearLayout>

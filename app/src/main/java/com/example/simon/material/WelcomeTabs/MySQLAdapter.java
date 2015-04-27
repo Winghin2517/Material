@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.simon.material.Database.DatabaseHelper;
+import com.example.simon.material.Database.PlaceDatabaseHelper;
 import com.example.simon.material.Model.Place;
 import com.example.simon.material.R;
 import com.example.simon.material.ThreadPop.ThreadPop;
@@ -39,7 +39,7 @@ public class MySQLAdapter extends RecyclerView.Adapter<MySQLAdapter.ViewHolder> 
     private static CardView cardView;
     private int lastPosition = -1;
     private boolean removed_welcome_screen = false;
-    private DatabaseHelper db;
+    private PlaceDatabaseHelper db;
     List<Place> placeList;
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -47,7 +47,7 @@ public class MySQLAdapter extends RecyclerView.Adapter<MySQLAdapter.ViewHolder> 
         mDataset = myDataset.toArray(new String[myDataset.size()]);
         mContext = context;
         mRecyclerView = recyclerView;
-        db = new DatabaseHelper(mContext);
+        db = new PlaceDatabaseHelper(mContext);
         placeList = db.getAllPlaces();
     }
 

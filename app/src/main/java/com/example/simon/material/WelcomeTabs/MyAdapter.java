@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.example.simon.material.Model.Place;
 import com.example.simon.material.R;
-import com.example.simon.material.ThreadPop.ThreadPop;
+import com.example.simon.material.SubjectList.SubjectListActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -21,6 +21,9 @@ import java.util.ArrayList;
  * Created by Simon on 2015/03/31.
  */
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+
+    private static final int VIEW_TYPE_WELCOME  = 0;
+    private static final int VIEW_TYPE_LIST = 1;
 
     private RecyclerView mRecyclerView;
     private static CardView cardView;
@@ -48,7 +51,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public class ViewHolder  extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder{
         // each data item is just a string in this case
         //These are the university items in the Recycler
         public TextView name_of_place;
@@ -66,13 +69,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public ViewHolder(View v, int viewType) {
             super(v);
 
-            if (viewType == 0 && !removed_welcome_screen) {
+            if (viewType == VIEW_TYPE_WELCOME && !removed_welcome_screen) {
                 mCancel = (ImageView) v.findViewById(R.id.cancel);
                 homescreen = v.findViewById(R.id.homescreen);
                 search_button = (ImageView) v.findViewById(R.id.search_button_inside_edittext);
                 cancel_button = (ImageView) v.findViewById(R.id.cancel_button_inside_edittext);
                 search_box = (EditText) v.findViewById(R.id.search_box);
-            } else if (viewType == 1) {
+            } else if (viewType == VIEW_TYPE_LIST) {
                 name_of_place = (TextView) v.findViewById(R.id.name_of_place);
                 description_of_place = (TextView) v.findViewById(R.id.description_place);
                 unipics = (ImageView) v.findViewById(R.id.unipics);
@@ -90,7 +93,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         ViewHolder vh;
         // create a new view
         switch (viewType) {
-            case 0:
+            case VIEW_TYPE_WELCOME:
                 if (!removed_welcome_screen) {
                     v = LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.recyclerview_tab1_welcome, parent, false);
@@ -111,8 +114,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(parent.getContext(), ThreadPop.class);
-                        intent.putExtra("ListNo",mRecyclerView.getChildPosition(v));
+                        Intent intent = new Intent(parent.getContext(), SubjectListActivity.class);
+                        //Intent intent = new Intent(parent.getContext(), ThreadPop.class);
+                        //intent.putExtra("NameOfPlace",mPlaceList.get(mRecyclerView.getChildAdapterPosition(v)-1).getName_of_place());
                         parent.getContext().startActivity(intent);
                     }
                 });
@@ -123,8 +127,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     //Overriden so that I can display custom rows in the recyclerview
     @Override
     public int getItemViewType(int position) {
-        int viewType = 1;
-        if (position == 0) viewType = 0;
+        int viewType = VIEW_TYPE_LIST;
+        if (position == VIEW_TYPE_WELCOME) return position;
+        else
         // add here your booleans or switch() to set viewType at your needed
         // I.E if (position == 0) viewType = 1; etc. etc.
         return viewType;
@@ -168,7 +173,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         return mPlaceList.size()+1;
 
     }
-
 
     public void removeItem(int position) {
         mRecyclerView.removeViewAt(position);

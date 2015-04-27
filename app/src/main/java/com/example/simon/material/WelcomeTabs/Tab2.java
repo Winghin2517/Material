@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.simon.material.Database.DatabaseHelper;
+import com.example.simon.material.Database.PlaceDatabaseHelper;
 import com.example.simon.material.Model.Place;
 import com.example.simon.material.R;
 
@@ -20,12 +20,12 @@ import java.util.List;
  * Created by hp1 on 21-01-2015.
  */
 public class Tab2 extends Fragment {
-    private DatabaseHelper db;
+    private PlaceDatabaseHelper db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.tab2,container,false);
-        db = new DatabaseHelper(getActivity());
+        db = new PlaceDatabaseHelper(getActivity());
         setUpDB();
         final EditText name = (EditText) v.findViewById(R.id.name);
         final EditText description = (EditText) v.findViewById(R.id.description);

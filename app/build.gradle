@@ -42,4 +42,6 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
 
     compile 'com.squareup.picasso:picasso:2.5.2'
+    
+    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.6.2'
 }

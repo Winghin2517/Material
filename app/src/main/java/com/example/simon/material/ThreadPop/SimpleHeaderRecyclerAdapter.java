@@ -23,49 +23,72 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.simon.material.Model.PostType;
+import com.example.simon.material.Model.WrappedPost;
+import com.example.simon.material.R;
+
 import java.util.ArrayList;
 
 public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_HEADER = 0;
-    private static final int VIEW_TYPE_ITEM = 1;
+    private static final int VIEW_TYPE_TEXT = 1;
+    private static final int VIEW_TYPE_PIC = 2;
 
     private LayoutInflater mInflater;
-    private ArrayList<String> mItems;
+    private ArrayList<WrappedPost> mPosts;
     private View mHeaderView;
 
-    public SimpleHeaderRecyclerAdapter(Context context, ArrayList<String> items, View headerView) {
+    public SimpleHeaderRecyclerAdapter(Context context, ArrayList<WrappedPost> posts, View headerView) {
         mInflater = LayoutInflater.from(context);
-        mItems = items;
+        mPosts = posts;
         mHeaderView = headerView;
     }
 
     @Override
     public int getItemCount() {
         if (mHeaderView == null) {
-            return mItems.size();
+            return mPosts.size();
         } else {
-            return mItems.size() + 1;
+            return mPosts.size() + 1;
         }
     }
 
+    //This is not really business logic and will have to be changed later...
     @Override
     public int getItemViewType(int position) {
-        return (position == 0) ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
+        if (position == 0) {
+            return VIEW_TYPE_HEADER;
+        } else if (mPosts.get(position-1).getPostType() == PostType.POSTTEXT) { //I think i have to subtract one here to get to compensate for the header
+            return VIEW_TYPE_TEXT;
+        } else if (mPosts.get(position-1).getPostType() == PostType.POSTPIC) {
+            return VIEW_TYPE_PIC;
+        } else //for now, we default to TextViewHolder
+        return VIEW_TYPE_TEXT;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_HEADER) {
-            return new HeaderViewHolder(mHeaderView);
-        } else {
-            return new ItemViewHolder(mInflater.inflate(android.R.layout.simple_list_item_1, parent, false));
+        switch (viewType) {
+            case VIEW_TYPE_HEADER:
+                return new HeaderViewHolder(mHeaderView);
+            case VIEW_TYPE_TEXT:
+               return new TextViewHolder(mInflater.inflate(R.layout.recyclerview_threadpop_text, parent, false));
+
+            case VIEW_TYPE_PIC:
+                return new PicViewHolder(mInflater.inflate(R.layout.recyclerview_threadpop_pic, parent, false));
+            default: //for now, we default to the TextViewHolder
+                return new TextViewHolder(mInflater.inflate(R.layout.recyclerview_threadpop_text, parent, false));
         }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        if (viewHolder instanceof ItemViewHolder) {
-            ((ItemViewHolder) viewHolder).textView.setText(mItems.get(position - 1));
+        if (viewHolder instanceof TextViewHolder) {
+            ((TextViewHolder) viewHolder).textView.setText(mPosts.get(position - 1).getPost());
+           // ((TextViewHolder) viewHolder).textView.setText(mPosts.get(position - 1).getPost());
+
+        } else if (viewHolder instanceof PicViewHolder) {
+            ((PicViewHolder) viewHolder).textView.setText(mPosts.get(position - 1).getPost());
         }
     }
 
@@ -75,12 +98,21 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    static class ItemViewHolder extends RecyclerView.ViewHolder {
+    static class TextViewHolder extends RecyclerView.ViewHolder {
+        TextView textView;
+        public TextViewHolder(View view) {
+            super(view);
+            textView = (TextView) view.findViewById(R.id.postheader);
+
+        }
+    }
+
+    static class PicViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
 
-        public ItemViewHolder(View view) {
+        public PicViewHolder(View view) {
             super(view);
-            textView = (TextView) view.findViewById(android.R.id.text1);
+            textView = (TextView) view.findViewById(R.id.postheader);
         }
     }
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@color/tabsScrollColor"
+            android:layout_margin="15dp"
+            android:id="@+id/profilepicsmall"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Simon Chan"
+            android:layout_toEndOf="@+id/profilepicsmall"
+            android:layout_marginTop="15dp"
+            android:id="@+id/profilename"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/timeposted"
+            android:layout_below="@+id/profilename"
+            android:layout_toEndOf="@+id/profilepicsmall"
+            android:text="3 hrs ago"/>
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/blackheart"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="15dp"/>
+    </RelativeLayout>

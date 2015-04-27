@@ -1,5 +1,8 @@
 package com.example.simon.material.WelcomeTabs;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.simon.material.Database.DatabaseHelper;
+import com.example.simon.material.Database.PlaceDatabaseHelper;
 import com.example.simon.material.Model.Place;
 import com.example.simon.material.R;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
@@ -34,8 +37,7 @@ public class Tab1 extends Fragment implements ObservableScrollViewCallbacks {
 
     private ObservableRecyclerView mRecyclerView;
     private MyAdapter mAdapter;
-    private ObservableRecyclerView.LayoutManager mLayoutManager;
-    private DatabaseHelper db;
+    private PlaceDatabaseHelper db;
     private static boolean dataUpdate;
     public Tab1(){}
 
@@ -54,14 +56,15 @@ public class Tab1 extends Fragment implements ObservableScrollViewCallbacks {
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         //db helper class initialised here
-        db = new DatabaseHelper(getActivity());
+        db = new PlaceDatabaseHelper(getActivity());
         //testing the loading of the data - load from DB first then if there are differences betweem db and mongolab, then we notifydatasetchanged
         mAdapter = new MyAdapter(new ArrayList<>(db.getAllPlaces()), mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
 
         //this asynctask below will set the adapter after the list is downloaded in the fragment - the download will not happen in the adapter
-        new HttpRequestTask().execute();
-
+        if (checkNetwork()) {
+            new HttpRequestTask().execute();
+        }
         //mRecyclerView.setScrollViewCallbacks(this); don't want the tab bar to be hidden anymore.
         setUpSwipeRefreshView(v);
 
@@ -77,7 +80,9 @@ public class Tab1 extends Fragment implements ObservableScrollViewCallbacks {
             @Override
             public void onRefresh() {
                 Toast.makeText(getActivity(), "Refreshing for 3 secs", Toast.LENGTH_SHORT).show();
-                new HttpRequestTask().execute();
+                if (checkNetwork()) {
+                    new HttpRequestTask().execute();
+                }
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -155,6 +160,26 @@ public class Tab1 extends Fragment implements ObservableScrollViewCallbacks {
             dataUpdate = false;
         }
 
+    }
+
+    private boolean checkNetwork() {
+        boolean wifiDataAvailable = false;
+        boolean mobileDataAvailable = false;
+        ConnectivityManager conManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] networkInfo = conManager.getAllNetworkInfo();
+        for (NetworkInfo netInfo : networkInfo) {
+            if (netInfo.getTypeName().equalsIgnoreCase("WIFI"))
+                if (netInfo.isConnected())
+                    wifiDataAvailable = true;
+            if (netInfo.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (netInfo.isConnected())
+                    mobileDataAvailable = true;
+        }
+        //if both is not available, do not use the HTTPAsynctask
+        if (!wifiDataAvailable && !mobileDataAvailable) {
+            Toast.makeText(getActivity(),"No internet available. Please connect.", Toast.LENGTH_SHORT).show();
+        }
+        return wifiDataAvailable || mobileDataAvailable;
     }
 
 }
